@@ -1,11 +1,6 @@
 package SpaceInvaiders;
 
 import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 public class PlayerShip implements ShipInterface {
 
@@ -14,18 +9,18 @@ public class PlayerShip implements ShipInterface {
 	final private int y = 370;
 	private boolean leftAccel, rightAcell;
 	private double GRAVITY = 0.75;
+	private Sprite spriteSpaceShip;
 
 	public PlayerShip() {
 		x = 190;
 		xVel = 0;
 		leftAccel = false;
 		rightAcell = false;
+		spriteSpaceShip = new Sprite("player.png");
 	}
 
 	public void draw(Graphics g) {
-		// g.setColor(Color.WHITE);
-		// g.fillRect(x, (int)y, 20, 20);
-		g.drawImage(Sprite.loadSprite("player.png"), x, y, null);
+		spriteSpaceShip.draw(g, x, y);
 	}
 
 	public void move() {
@@ -40,8 +35,7 @@ public class PlayerShip implements ShipInterface {
 	}
 	
 	public void fire() {
-		
-		
+		new FireSprite(this);		
 	}
 
 	// sett Accel
@@ -55,5 +49,9 @@ public class PlayerShip implements ShipInterface {
 
 	public int getX() {
 		return this.x;
+	}
+
+	public int getY() {
+		return this.y;
 	}
 }

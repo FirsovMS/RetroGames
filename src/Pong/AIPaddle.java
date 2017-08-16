@@ -5,6 +5,7 @@ import java.awt.Graphics;
 
 public class AIPaddle implements Paddle {
 
+	public int Score;
 	// global parameters
 	final double GRAVITY = 0.94;
 	double y, yVel;
@@ -13,6 +14,7 @@ public class AIPaddle implements Paddle {
 	Ball b1;
 
 	public AIPaddle(int player, Ball b) {
+		this.Score = 0;
 		upAccel = false; downAccel = false;
 		b1 = b;
 		y = 210; yVel = 0;

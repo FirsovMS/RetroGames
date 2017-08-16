@@ -2,21 +2,24 @@ package Pong;
 
 import java.applet.Applet;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 @SuppressWarnings("serial")
-public class Tennis extends Applet implements Runnable, KeyListener {
+public class PongGame extends Applet implements Runnable, KeyListener {
 
 	// screen size params
+	private int time = 16;
 	final int WIDTH = 700, HEIGHT = 500;
 	Thread thread;
 	HumanPaddle p1;
 	AIPaddle p2;
 	Ball ball;
 	boolean gameStarted;
+	boolean gameOver;
 	// disable blinking
 	Graphics gfx;
 	Image img;
@@ -24,6 +27,7 @@ public class Tennis extends Applet implements Runnable, KeyListener {
 	// main method,as entry point
 	public void init() {
 		this.resize(WIDTH, HEIGHT);
+		this.gameOver = false;
 		gameStarted = false;
 		this.addKeyListener(this);
 
@@ -43,21 +47,44 @@ public class Tennis extends Applet implements Runnable, KeyListener {
 		gfx.setColor(Color.BLACK);
 		// game out
 		gfx.fillRect(0, 0, WIDTH, HEIGHT);
-		if (ball.getX() < -10 || ball.getX() > 710) {
-			gfx.setColor(Color.GREEN);
-			gfx.drawString("Game Over", 350, 250);
-		} else {
-			p1.draw(gfx); // draw player model
-			ball.draw(gfx);
-			p2.draw(gfx);
-		}
-
+		// Start game condition
 		if (!gameStarted) {
 			gfx.setColor(Color.WHITE);
 			gfx.drawString("Tennis", 340, 100);
 			gfx.drawString("Press Enter to Begin", 310, 130);
+		} else {
+			// drawing a models
+			p1.draw(gfx); // draw player model
+			ball.draw(gfx);
+			p2.draw(gfx);
+			// draw score
+			gfx.setColor(Color.WHITE);
+			gfx.setFont(new Font("TimesRoman", Font.PLAIN, 22));
+			gfx.drawString(String.valueOf(p1.Score), 100, 20);
+			gfx.drawString(String.valueOf(p2.Score), 600, 20);
+			// Score control
+			if (ball.getX() < -10) {
+				if (p1.Score > 10) {
+					gfx.drawString("You Win!", 340, 240);
+				} else {
+					++p1.Score;
+					this.timeSub(time);					
+					ball.setX(340);
+					ball.setY(240);
+				}
+			} else if (ball.getX() > 710) {
+				
+				if (p2.Score > 10) {
+					gfx.drawString("AI Win!", 340, 240);
+				}else {
+					++p2.Score;
+					this.timeSub(time);
+					ball.setX(340);
+					ball.setY(240);
+				}
+				
+			}
 		}
-
 		g.drawImage(img, 0, 0, this);
 	}
 
@@ -77,7 +104,7 @@ public class Tennis extends Applet implements Runnable, KeyListener {
 			}
 			this.repaint();// repaint out sheme
 			try {
-				Thread.sleep(10);
+				Thread.sleep(time);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -108,5 +135,11 @@ public class Tennis extends Applet implements Runnable, KeyListener {
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	public void timeSub(int t) {
+		if(time >= 5) {
+			--time;
+		}
 	}
 }

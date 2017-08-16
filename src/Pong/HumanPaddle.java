@@ -5,6 +5,7 @@ import java.awt.Graphics;
 
 public class HumanPaddle implements Paddle {
 
+	public int Score;
 	// global parameters
 	final double GRAVITY = 0.94;
 	double y, yVel;
@@ -12,6 +13,7 @@ public class HumanPaddle implements Paddle {
 	int player, x;
 
 	public HumanPaddle(int player) {
+		this.Score = 0;
 		upAccel = false; downAccel = false;
 		y = 210; yVel = 0;
 		if(player == 0) {

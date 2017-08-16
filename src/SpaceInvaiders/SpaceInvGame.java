@@ -88,7 +88,8 @@ public class SpaceInvGame extends Applet implements Runnable, KeyListener {
 			break;
 		//press Fire
 		case KeyEvent.VK_SPACE:
-			
+			System.out.println("Fire");
+			player.fire();
 			break;
 		}
 	}
