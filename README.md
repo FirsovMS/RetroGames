@@ -1,2 +1,2 @@
-"# RetroGames" 
-Classic games, such as Pong, Snake,and e.t.c ,writted by Java
+Учебный проект для занятий по программированию на java
+Classic games, such as Pong, Snake, SpaceInvaiders
