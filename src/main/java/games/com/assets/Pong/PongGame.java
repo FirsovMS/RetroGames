@@ -1,38 +1,41 @@
 package games.com.assets.Pong;
 
+import games.com.assets.BaseGame;
+
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 @SuppressWarnings("serial")
-public class PongGame extends Applet implements Runnable, KeyListener {
-
-    final int WIDTH = 700, HEIGHT = 500;
-    Thread thread;
-    HumanPaddle p1;
-    AIPaddle p2;
-    Ball ball;
+public class PongGame extends BaseGame {
+    private static final int offsetX = 100;
+    private Thread thread;
+    private HumanPaddle p1;
+    private AIPaddle p2;
+    private Ball ball;
     boolean gameStarted;
     boolean gameOver;
     // disable blinking
-    Graphics gfx;
-    Image img;
-    // screen size params
-    private int time = 1000 / 60; // 1000 ms % 60 frames
+    private Graphics gfx;
+    private Image img;
+
+    public PongGame(int width, int height) {
+        super(width, height);
+    }
 
     // main method,as entry point
     public void init() {
-        this.resize(WIDTH, HEIGHT);
+        this.resize(width, height);
         this.gameOver = false;
         gameStarted = false;
         this.addKeyListener(this);
 
-        ball = new Ball();
-        p1 = new HumanPaddle(0);
-        p2 = new AIPaddle(1, ball);
+        ball = new Ball(width, height);
+        p1 = new HumanPaddle(0, height, width);
+        p2 = new AIPaddle(1, ball, width, height);
 
-        img = createImage(WIDTH, HEIGHT);
+        img = createImage(width, height);
         gfx = img.getGraphics();
 
         thread = new Thread(this);
@@ -43,7 +46,7 @@ public class PongGame extends Applet implements Runnable, KeyListener {
     public void paint(Graphics g) {
         gfx.setColor(Color.BLACK);
         // game out
-        gfx.fillRect(0, 0, WIDTH, HEIGHT);
+        gfx.fillRect(0, 0, width, height);
         // Start game condition
         if (!gameStarted) {
             gfx.setColor(Color.WHITE);
@@ -57,25 +60,23 @@ public class PongGame extends Applet implements Runnable, KeyListener {
             // draw score
             gfx.setColor(Color.WHITE);
             gfx.setFont(new Font("TimesRoman", Font.PLAIN, 22));
-            gfx.drawString(String.valueOf(p1.Score), 100, 20);
-            gfx.drawString(String.valueOf(p2.Score), 600, 20);
+            gfx.drawString(String.valueOf(p1.Score), offsetX, 20);
+            gfx.drawString(String.valueOf(p2.Score), width - offsetX, 20);
             // Score control
-            if (ball.getX() < -10) {
+            if (ball.getX() > width) {
                 if (p1.Score > 10) {
                     gfx.drawString("You Win!", 340, 240);
                 } else {
                     ++p1.Score;
-                    this.timeSub(time);
                     ball.setX(340);
                     ball.setY(240);
                 }
-            } else if (ball.getX() > 710) {
+            } else if (ball.getX() < -10) {
 
                 if (p2.Score > 10) {
                     gfx.drawString("AI Win!", 340, 240);
                 } else {
                     ++p2.Score;
-                    this.timeSub(time);
                     ball.setX(340);
                     ball.setY(240);
                 }
@@ -92,7 +93,7 @@ public class PongGame extends Applet implements Runnable, KeyListener {
 
     // run this process as parallel thread
     public void run() {
-        for (; ; ) {
+        while (true){
             if (gameStarted) {
                 p1.move();
                 p2.move();
@@ -132,11 +133,5 @@ public class PongGame extends Applet implements Runnable, KeyListener {
     public void keyTyped(KeyEvent e) {
         // TODO Auto-generated method stub
 
-    }
-
-    public void timeSub(int t) {
-        if (time >= 5) {
-            --time;
-        }
     }
 }

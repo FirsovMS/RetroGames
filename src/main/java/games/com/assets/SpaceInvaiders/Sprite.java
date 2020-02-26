@@ -10,7 +10,7 @@ public class Sprite {
 
     public Sprite(String fileName) {
         try {
-            this.image = ImageIO.read(SpaceInvGame.class.getResourceAsStream(fileName));
+            this.image = ImageIO.read(SpaceInvadersGame.class.getResourceAsStream(fileName));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

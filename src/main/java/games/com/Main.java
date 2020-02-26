@@ -2,13 +2,12 @@ package games.com;
 
 import games.com.assets.Pong.PongGame;
 import games.com.assets.Snake.SnakeGame;
-import games.com.assets.SpaceInvaiders.SpaceInvGame;
+import games.com.assets.SpaceInvaiders.SpaceInvadersGame;
 
 import javax.swing.*;
 import java.applet.Applet;
 import java.awt.*;
 import java.util.Scanner;
-import java.util.function.Supplier;
 
 public class Main {
     private static final String exitCommand = "Q";
@@ -35,15 +34,15 @@ public class Main {
                     switch (number) {
                         case 1:
                             // run pong
-                            RunGame(new PongGame());
+                            RunGame(new PongGame(800, 600));
                             break;
                         case 2:
                             // run snake
-                            RunGame(new SnakeGame());
+                            RunGame(new SnakeGame(800, 600));
                             break;
                         case 3:
                             // run invaders
-                            RunGame(new SpaceInvGame());
+                            RunGame(new SpaceInvadersGame(800, 600));
                             break;
                     }
                 }
@@ -52,18 +51,14 @@ public class Main {
     }
 
     public static void RunGame(Applet applet) {
-        try {
-            JFrame frame = new JFrame();
-            frame.setLayout(new BorderLayout());
+        JFrame frame = new JFrame();
+        frame.setLayout(new BorderLayout());
+        frame.setSize(applet.getSize());
 
-            frame.add(applet, BorderLayout.CENTER);
-            frame.setVisible(true);
-            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        frame.add(applet, BorderLayout.CENTER);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-            applet.init();
-        } catch (Exception ex) {
-            System.err.println(ex.getMessage());
-            System.err.println(ex.getStackTrace());
-        }
+        applet.init();
     }
 }

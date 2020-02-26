@@ -3,30 +3,36 @@ package games.com.assets.Snake;
 import java.awt.*;
 
 public class Token {
+    private static final int cellSize = 20;
 
-    private int x, y, scoore;
+    private final int width;
+    private final int height;
+    private int x, y, score;
     private Snake snake;
 
-    public Token(Snake s) {
+    public Token(Snake snake, int width, int height) {
+        this.width = width;
+        this.height = height;
+        this.snake = snake;
+
         changePosition();
-        this.snake = s;
     }
 
     public int getScore() {
-        return scoore;
+        return score;
     }
 
     public void changePosition() {
-        x = (int) (Math.random() * 395);
-        y = (int) (Math.random() * 395);
+        x = (int) (Math.random() * width);
+        y = (int) (Math.random() * height);
     }
 
     public boolean snakeCollision() {
         int snakeX = snake.getX() + 2;
         int snakeY = snake.getY() + 2;
-        if ((snakeX >= x - 1 && snakeX <= (x + 7)) && (snakeY >= y - 1 && snakeY <= (y + 7))) {
+        if ((snakeX >= (x - 1) && snakeX <= (x + cellSize + 1)) && (snakeY >= (y - 1) && snakeY <= (y + 1 + cellSize))) {
             changePosition();
-            ++scoore;
+            ++score;
             snake.setElongate(true);
             return true;
         }
@@ -35,6 +41,6 @@ public class Token {
 
     public void draw(Graphics g) {
         g.setColor(Color.GREEN);
-        g.fillRect(x, y, 6, 6);
+        g.fillRect(x, y, cellSize, cellSize);
     }
 }

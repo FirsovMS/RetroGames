@@ -1,31 +1,37 @@
 package games.com.assets.Snake;
 
+import games.com.assets.BaseGame;
+
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Collection;
 
 @SuppressWarnings("serial")
-public class SnakeGame extends Applet implements Runnable, KeyListener {
+public class SnakeGame extends BaseGame {
+    private Graphics gfx;
+    private Image img;
+    private Thread thread;
+    private Snake snake;
+    private boolean gameOver;
+    private Token token;
 
-    Graphics gfx;
-    Image img;
-    Thread thread;
-    Snake snake;
-    boolean gameOver;
-    Token token;
+    public SnakeGame(int width, int height ){
+        super(width, height);
+    }
 
     public void init() {
         // graphical syst
-        this.resize(400, 400);
-        img = createImage(400, 400);
+        this.resize(width, height);
+        img = createImage(width, height);
         gfx = img.getGraphics();
 
         this.addKeyListener(this);
         // game objects
         gameOver = false;
-        snake = new Snake();
-        token = new Token(snake);
+        snake = new Snake(width, height);
+        token = new Token(snake, width, height);
         // threading system
         thread = new Thread(this);
         thread.start();
@@ -33,17 +39,25 @@ public class SnakeGame extends Applet implements Runnable, KeyListener {
 
     public void paint(Graphics g) {
         gfx.setColor(Color.black);
-        gfx.fillRect(0, 0, 400, 400);
+        gfx.fillRect(0, 0, width, height);
 
         if (!gameOver) {
             snake.draw(gfx);
             token.draw(gfx);
         } else {
             gfx.setColor(Color.RED);
-            gfx.drawString("Game Over", 180, 150);
-            gfx.drawString("Scoore: " + token.getScore(), 180, 170);
+            String[] msg = { "Game Over", String.format("Score is %d", token.getScore()) };
+            drawMessages(msg);
         }
         g.drawImage(img, 0, 0, null);
+    }
+
+    private void drawMessages(String[] messages) {
+        int y = height / 2;
+        final int x = width / 2;
+        for (String msg: messages) {
+            gfx.drawString(msg, x, y += 20);
+        }
     }
 
     public void update(Graphics g) {
@@ -56,7 +70,7 @@ public class SnakeGame extends Applet implements Runnable, KeyListener {
 
     // the thread run
     public void run() {
-        for (; ; ) {
+        while (true){
             if (!gameOver) {
                 snake.move();
                 this.checkGameOver();
@@ -64,7 +78,7 @@ public class SnakeGame extends Applet implements Runnable, KeyListener {
             }
             this.repaint();
             try {
-                Thread.sleep(50);
+                Thread.sleep(time);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -72,13 +86,13 @@ public class SnakeGame extends Applet implements Runnable, KeyListener {
         }
     }
 
+    private final int borderSize = 10;
+
     public void checkGameOver() {
-        if ((snake.getX() < 0 || snake.getX() > 396) || (snake.getY() < 0 || snake.getY() > 396)) {
-            gameOver = true;
-        }
-        if (snake.snakeCollision()) {
-            gameOver = true;
-        }
+        final int radius = snake.getCellRadius();
+        gameOver = ((snake.getX() < 0 || snake.getX() > width - borderSize - radius)
+                || (snake.getY() < 0 || snake.getY() > height - borderSize - radius))
+                || (snake.snakeCollision());
     }
 
     // Motion triggers
